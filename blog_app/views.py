@@ -13,10 +13,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
     # only authenticated user can perform any request if not other user are just able to view the content
     permission_classes = [IsAuthenticated]
-
-    if not request.user.is_authenticated:
-        return Response({"error": "Authentication required"}, status=401)
-
+    
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
