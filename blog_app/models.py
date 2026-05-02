@@ -30,28 +30,28 @@ class Comment(models.Model):
 
 # Likes feature for Post
 class PostLike(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     # User can only like a post once
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["author", "post"], name="unique_PostLike")
+            models.UniqueConstraint(fields=["user", "post"], name="unique_PostLike")
         ]
 
     def __str__(self):
-        return f"PostLike {self.id} by {self.author}"
+        return f"PostLike {self.id}: {self.user} by {self.post}"
     
 # Likes feature for Comment
 class CommentLike(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
     # User can only like a comment once
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["author", "comment"], name="unique_CommentLike")
+            models.UniqueConstraint(fields=["user", "comment"], name="unique_CommentLike")
         ]
 
     def __str__(self):
-        return f"CommentLike {self.id} by {self.author}"
+        return f"CommentLike {self.id}: {self.user} by {self.comment}"
