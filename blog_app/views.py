@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import CustomUserSerializer, PostSerializer, CommentSerializer
+from .serializers import CustomUserSerializer, RegistrationSerializer, PostSerializer, CommentSerializer
 from .models import CustomUser, Post, Comment, PostLike, CommentLike
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework import status
 
 # Create your views here.
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -13,6 +15,14 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
     # only authenticated user can perform any request if not other user are just able to view the content
     permission_classes = [IsAuthenticated]
+
+class RegistrationAPIView(APIView):
+    def post(self, request):
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -45,7 +55,7 @@ class PostViewSet(viewsets.ModelViewSet):
                 user=user, 
                 post_id=pk
             )
-            return Response({"liked":True}, status=200)
+            return Response({"liked":True}, status.HTTP_200_OK)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -82,6 +92,6 @@ class CommentViewSet(viewsets.ModelViewSet):
                 user=user, 
                 comment_id=pk
             )
-            return Response({"liked":True}, status=200)
+            return Response({"liked":True}, status.HTTP_200_OK)
 
 
